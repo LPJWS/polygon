@@ -1,0 +1,27 @@
+version: '2'
+services:
+
+  polygon-web:
+    restart: always
+    build: .
+    env_file: .env
+    container_name: polygon-web
+    command: bash -c "rm -rf celerybeat.pid && python manage.py collectstatic --no-input && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/site
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgresql-polygon
+
+  postgresql-polygon:
+    image: postgres:12
+    container_name: db_polygon
+    env_file: .env
+    volumes:
+      - db-polygon:/var/lib/postgresql/data/pgdata
+    ports:
+      - "5431:5432"
+
+volumes:
+  db-polygon:

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Безопасность операционных систем</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1 class="title">Безопасность операционных систем</h1>
+    </header>
+    <div class="menu">
+        <ul>
+            <li><a>Главная</a></li>
+            <li><a>Результаты</a></li>
+            <li><a>Администрирование</a></li>
+            <li><a href="/logout">Выйти</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <table class="tasks">
+            <tr>
+                <td>
+                    <div class="task">
+                        <h2 class="task-title">Подключение к роутеру <br>по WiFi без пароля</h2>
+                        <span id="w_old_pass">Текущий пароль: michael</span>
+                        <button id="button_new_pass">Сменить пароль</button>
+                        <span id="w_new_pass"></span>
+                        <script>
+                            $( document ).ready(function() {
+                                $.get(
+                                  "/w_get_pass",
+                                  {},
+                                  onAjaxSuccess
+                                );
+                    
+                                function onAjaxSuccess(data)
+                                {
+                                  data_json = JSON.parse(data);
+                                  console.log(data_json);
+                                  if (data_json.status == 'ok') {
+                                    $("#w_old_pass").html('Текущий пароль: ' + data_json.response.password);
+                                  }
+                                  else {
+                                    $("#w_old_pass").html('Произошла ошибка: ' + data_json.error);
+                                  }
+                                }
+                            });
+                    
+                            $( "#button_new_pass" ).click(function() {
+                              $("#w_new_pass").html('Подождите...');
+                              $.post(
+                                  "/w_change_pass",
+                                  {},
+                                  onAjaxSuccess
+                                );
+                    
+                                function onAjaxSuccess(data)
+                                {
+                                  data_json = JSON.parse(data);
+                                  if (data_json.status == 'ok') {
+                                    $("#w_new_pass").html('Новый пароль: ' + data_json.response.password);
+                                    $("#w_old_pass").html('Текущий пароль: ' + data_json.response.password);
+                                  }
+                                  else {
+                                    $("#w_new_pass").html('Произошла ошибка: ' + data_json.error);
+                                  }
+                                }
+                            });
+                        </script>
+                    </div>
+                </td>
+                <td>
+                    <div class="task">
+                        <h2 class="task-title">Эксплуатация Bash-уязвимости</h2>
+                        <span id="b_total_files">Всего значений в хранилище: 9</span>
+                        <button id="b_clear">Очистить хранилище</button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="task">
+                        <h2 class="task-title">Управление умным домом. <br>Лампочка</h2>
+                        <span id="m1_current">Текущее состояние: On</span>
+                        <button id="m1_reload">Обновить</button>
+                        <button id="m1_off">Выключить</button>
+                        <button id="m1_on">Включить</button>
+                    </div>
+                </td>
+                <td>
+                    <div class="task">
+                        <h2 class="task-title">Управление умным домом. <br>Пороговое значение датчика</h2>
+                        <span id="m2_current">Текущее состояние: None</span>
+                        <button id="m2_reload">Обновить</button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="task">
+                        <h2 class="task-title">NONAME</h2>
+                    </div>
+                </td>
+                <td>
+                    <div class="task">
+                        <h2 class="task-title">NONAME</h2>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

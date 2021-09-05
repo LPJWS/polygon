@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1 class="title" align="center">Безопасность операционных систем</h1>
+    </header>
+    
+    <table class="tasks"><tr><td><div class="task">
+        {% if message %}
+            <div id="message">
+                <p>
+                    <strong>{{ message }}</strong>
+                </p>
+            </div>
+        {% endif %}
+        <form action="/signup/" method="post">
+            {% csrf_token %}
+            <div class="container">
+                <p>Введите данные</p>
+                <hr>
+
+                <label for="email"><b>Логин</b></label>
+                <input type="text" placeholder="Логин" name="login" required>
+                <hr>
+                <label for="psw"><b>Пароль</b></label>
+                <input type="password" placeholder="Пароль" name="psw" required>
+                <hr>
+                <label for="name"><b>Фамилия и имя</b></label>
+                <input type="name" placeholder="ФИ" name="name" required>
+                <hr>
+                <label for="group"><b>Группа</b></label>
+                <input type="group" placeholder="Группа" name="group" required>
+                <hr>
+
+                <button type="submit" class="loginbtn">Зарегистрироваться</button>
+            </div>
+        </form>
+        <div class="container signin">
+            <p>Уже зарегистрированы? <a href="/signin">Войти</a>.</p>
+        </div>
+    </div></td></tr></table>
+</body>
+</html>

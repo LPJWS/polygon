@@ -1,0 +1,131 @@
+header{
+ width: 100%;
+ background: #D8E3AB;
+ height: 70px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}
+
+body {
+    font-family: Geneva, Arial, Helvetica, sans-serif;
+}
+
+button {
+    background: #61be61;
+    border-radius: 5px;
+}
+
+header h1 {
+    text-align: center;
+    font-family: Geneva, Arial, Helvetica, sans-serif;
+}
+
+.task {
+    background: #D8E3AB;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    width: 100%;
+}
+
+.task-title {
+    text-align: center;
+    font-family: Geneva, Arial, Helvetica, sans-serif;
+}
+
+.task-desc {
+    text-align: center;
+    font-family: Geneva, Arial, Helvetica, sans-serif;
+}
+
+span {
+    font-family: Geneva, Arial, Helvetica, sans-serif;
+}
+
+.tasks {
+    margin: auto;
+    border-spacing: 100px;
+}
+
+.menu {
+    background: #819A32;
+}
+
+.menu ul {
+    list-style: none; /*убираем маркеры списка*/
+    margin: 0; /*убираем отступы*/
+    padding-left: 0; /*убираем отступы*/
+    margin-top:0px; /*делаем отступ сверху*/
+    background:#819A32; /*добавляем фон всему меню (заменив этот параметр, вы поменяете цвет всего меню)*/
+    height: 50px; /*задаем высоту*/
+}
+
+.menu li {
+    float:left; /*Размещаем список горизонтально для реализации меню*/
+  }
+
+.menu a {
+    text-decoration: none; /*убираем подчеркивание текста ссылок*/
+    background:#819A32; /*добавляем фон к пункту меню (заменив этот параметр, вы поменяете цвет всех пунктов меню)*/
+    color:#fff; /*меняем цвет ссылок*/
+    padding:0px 15px; /*добавляем отступ*/
+    font-family: arial; /*меняем шрифт*/
+    line-height:50px; /*ровняем меню по вертикали*/
+    display: block; 
+    border-right: 1px solid #819A32; /*добавляем бордюр справа*/
+    -moz-transition: all 0.3s 0.01s ease; /*делаем плавный переход*/
+    -o-transition: all 0.3s 0.01s ease;
+    -webkit-transition: all 0.3s 0.01s ease;
+}
+.menu a:hover {
+    background:#3a7927;/*добавляем эффект при наведении*/
+}
+
+.title {
+    top: 50%;
+}
+
+.results {
+    background: #D8E3AB;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    width: 50%;
+}
+
+.results table {
+    width: 100%;
+}
+
+.results_admin {
+    background: #D8E3AB;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    width: 90%;
+}
+
+.results_admin table {
+    width: 100%;
+}
+
+.results_admin td {
+    padding: 5px;
+}
+
+.manual {
+    background: #D8E3AB;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    width: 50%;
+}

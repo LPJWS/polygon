@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Безопасность операционных систем</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1 class="title">Безопасность операционных систем</h1>
+    </header>
+    <div class="menu">
+        <ul>
+            <li><a href="/">🏠Главная</a></li>
+            <li><a href="/results">📈Результаты</a></li>
+            <li><a href="/admin">🔧Администрирование</a></li>
+            <li><a href="/logout">🚪Выйти</a></li>
+        </ul>
+    </div>
+    <div class="content" align="center">
+        <br>
+        <div class="manual">
+            <h3>✋Засчитать решение вручную</h3>
+            <label>💡Таск</label>
+            <select id="task" name="task">
+                {% for task in tasks_raw %}
+                    <option value="{{task.id}}">{{ task.title }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <label>👦Студент</label>
+            <select id="student" name="student">
+                {% for student in students %}
+                    <option value="{{student.id}}">{{ student.name }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <button id="manual">✋Засчитать</button>
+
+            <script>
+                $( "#manual" ).click(function() {
+                    $.post(
+                        "/accept/manual/",
+                        {"task": $( "#task" ).val(), "student": $( "#student" ).val()},
+                        onAjaxSuccess
+                    );
+            
+                    function onAjaxSuccess(data)
+                    {
+                        data_json = JSON.parse(data);
+                        location.reload();
+                    }
+                });
+            </script>
+        </div>
+        <br>
+        <div class="results_admin">
+            <h3>
+                📈Результаты
+                {% if message %}
+                    ({{ message }})
+                    <a href='/results'>Назад</a>
+                {% endif %}
+            </h3>
+            <table border="1">
+                <tr>
+                    <th>👫Группа</th>
+                    <th>👦Студент</th>
+                    <th>💡Таск</th>
+                    <th>🕐Дата решения</th>
+                    <th>✔️Дата принятия отчета</tr>
+                </tr>
+                {% for task in tasks %}
+                    <tr>
+                        <td><a href="/results/group/{{ task.student.group.id }}">{{ task.student.group.title }}</a></td>
+                        <td><a href="/results/student/{{ task.student.id }}">{{ task.student.name }}</a></td>
+                        <td><a href="/results/task/{{ task.task.id }}">{{ task.task.title }}</a></td>
+                        <td>{{ task.date }}</td>
+                        <td>
+                            {% if task.date_accepted %}
+                                ✅{{ task.date_accepted }}
+                            {% else %}
+                                ❌Отчет не принят <button id="accept_{{ task.id }}">✅Принять?</button>
+                                <script>
+                                    $( "#accept_{{ task.id }}" ).click(function() {
+                                        $.post(
+                                            "/accept/",
+                                            {"task": "{{ task.id }}"},
+                                            onAjaxSuccess
+                                        );
+                                
+                                        function onAjaxSuccess(data)
+                                        {
+                                            data_json = JSON.parse(data);
+                                            location.reload();
+                                        }
+                                    });
+                                </script>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    Вы не решили ни одного таска...
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</body>
+</html>

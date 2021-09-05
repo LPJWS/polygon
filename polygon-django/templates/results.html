@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Безопасность операционных систем</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1 class="title">Безопасность операционных систем</h1>
+    </header>
+    <div class="menu">
+        <ul>
+            <li><a href="/">🏠Главная</a></li>
+            <li><a href="/results">📈Результаты</a></li>
+            <li><a href="/logout">🚪Выйти</a></li>
+        </ul>
+    </div>
+    <p>Вы вошли как {{ user.name }}</p>
+    <div class="content" align="center">
+        <div class="results">
+            <h3>📈Ваши результаты</h3>
+            <table border="1">
+                <tr>
+                    <th>💡Таск</th>
+                    <th>🕐Дата решения</th>
+                    <th>✔️Дата принятия отчета</tr>
+                </tr>
+                {% for task in tasks %}
+                    <tr>
+                        <td>{{ task.task.title }}</td>
+                        <td>{{ task.date }}</td>
+                        <td>
+                            {% if task.date_accepted %}
+                                ✅{{ task.date_accepted }}
+                            {% else %}
+                                ❌Отчет не принят
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    Вы не решили ни одного таска...
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</body>
+</html>

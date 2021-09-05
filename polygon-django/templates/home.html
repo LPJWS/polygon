@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Безопасность операционных систем</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1 class="title">Безопасность операционных систем</h1>
+    </header>
+    <div class="menu">
+        <ul>
+            <li><a href="/">🏠Главная</a></li>
+            <li><a href="/results">📈Результаты</a></li>
+            <li><a href="/logout">🚪Выйти</a></li>
+        </ul>
+    </div>
+    <p>Вы вошли как {{ user.name }}</p>
+    <div class="content">
+        <table class="tasks">
+            {% for row in tasks %}
+            <tr>
+                {% for task in row %}
+                <td>
+                    <div class="task" id={{ task.id }}>
+                        <h2 class="task-title">{{ task.title }}</h2>
+                        <p class="task-desc">{{ task.desc }}</p>
+                        {% if task.material.all %}
+                            📎Раздаточные материалы:<br>
+                            {% for material in task.material.all %}
+                                <a href="media/{{ material.file }}">{{ material.title }}</a>
+                            {% endfor %}
+                            <br>
+                        {% endif %}
+                        {% if task.is_manual %}
+                            <span>✋Данный таск проверяется вручную</span>
+                        {% else %}
+                            <input id="flag_input_{{ task.id }}" type="text" placeholder="🏳️Флаг" name="flag">
+                            <hr>
+                            <button id="send_flag_{{ task.id }}">✅Отправить</button>
+                            <span id="status_{{ task.id }}"></span>
+                            <script>
+                                $( "#send_flag_{{ task.id }}" ).click(function() {
+                                      $.post(
+                                          "/send_flag/{{ task.id }}/",
+                                          {"flag": $("#flag_input_{{ task.id }}").val()},
+                                          onAjaxSuccess
+                                        );
+                            
+                                        function onAjaxSuccess(data)
+                                        {
+                                          data_json = JSON.parse(data);
+                                          if (data_json.status == 'ok') {
+                                              if (data_json.response == 'correct') {
+                                                $("#status_{{ task.id }}").html('Верный флаг!');
+                                              }
+                                              else {
+                                                $("#status_{{ task.id }}").html('Неверный флаг!');
+                                              }
+                                            $("#w_new_pass").html('Новый пароль: ' + data_json.response.password);
+                                            $("#w_old_pass").html('Текущий пароль: ' + data_json.response.password);
+                                          }
+                                          else {
+                                            $("#status_{{ task.id }}").html('Произошла ошибка: ' + data_json.error);
+                                          }
+                                        }
+                                    });
+                            </script>
+                        {% endif %}
+                    </div>
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
