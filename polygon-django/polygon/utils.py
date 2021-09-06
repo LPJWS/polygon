@@ -47,7 +47,7 @@ def get_pass():
         "Origin": "http://%s" % w_host,
         "Connection": "keep-alive"})
     response.encoding = 'utf-8'
-    soup = BeautifulSoup(response.text, features="lxml")
+    soup = BeautifulSoup(response.text)
     try:
         e = soup.findAll('script')[3].string.split('\n')[46].split('"')[1]
     except Exception:
@@ -102,7 +102,7 @@ def change_pass(passwd=None):
         "Origin": "http://%s" % w_host,
         "Connection": "keep-alive"})
     response.encoding = 'utf-8'
-    soup = BeautifulSoup(response.text, features="lxml").find('form')
+    soup = BeautifulSoup(response.text).find('form')
     try:
         timestamp = soup.get('action').split()[1].split('=')[1]
     except Exception:
