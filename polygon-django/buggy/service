@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Welcome our key/value storage"
+echo "Welcome to our key/value storage!"
 echo "Put/get?"
 read cmd
 
@@ -10,11 +10,11 @@ read filename
 if [[ $cmd == "put" ]]; then
     echo "Secret?"
     read flag
-    bash -c "echo $flag > storage/$filename"
+    sh -c "echo $flag > storage/$filename"
     echo "OK!"
 elif [[ $cmd == "get" ]]; then
     echo "Your secret:"
-    bash -c "cat storage/$filename"
+    sh -c "cat storage/$filename"
 else
     echo "Bad command"
     exit 1

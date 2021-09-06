@@ -1,0 +1,12 @@
+version: '2'
+services:
+  socat:
+    image: alpine/socat
+    restart: always
+    container_name: bash
+    command: tcp-listen:3333,fork,reuseaddr exec:"sh ./service"
+    working_dir: /buggy
+    volumes: 
+      - .:/buggy
+    ports:
+      - "3333:3333"
