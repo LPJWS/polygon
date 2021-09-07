@@ -20,135 +20,22 @@
     </div>
     <div class="content">
         <table class="tasks">
+          {% for row in tasks %}
             <tr>
+              {% for task in row %}
                 <td>
-                    <div class="task">
-                        <h2 class="task-title">Подключение к роутеру <br>по WiFi без пароля</h2>
-                        <span id="w_old_pass">Текущий пароль:</span>
-                        <button id="button_new_pass">Сменить пароль</button>
-                        <span id="w_new_pass"></span>
-                        <script>
-                            $( document ).ready(function() {
-                                $.get(
-                                  "/w_get_pass/",
-                                  {},
-                                  onAjaxSuccess
-                                );
-                    
-                                function onAjaxSuccess(data)
-                                {
-                                  data_json = JSON.parse(data);
-                                  if (data_json.status == 'ok') {
-                                    $("#w_old_pass").html('Текущий пароль: ' + data_json.response.password);
-                                    console.log(data_json.response.password);
-                                  }
-                                  else {
-                                    $("#w_old_pass").html('Произошла ошибка: ' + data_json.error);
-                                  }
-                                }
-                            });
-                    
-                            $( "#button_new_pass" ).click(function() {
-                              $("#w_new_pass").html('Подождите...');
-                              $.post(
-                                  "/w_change_pass/",
-                                  {},
-                                  onAjaxSuccess
-                                );
-                    
-                                function onAjaxSuccess(data)
-                                {
-                                  data_json = JSON.parse(data);
-                                  if (data_json.status == 'ok') {
-                                    $("#w_new_pass").html('Новый пароль: ' + data_json.response.password);
-                                    $("#w_old_pass").html('Текущий пароль: ' + data_json.response.password);
-                                  }
-                                  else {
-                                    $("#w_new_pass").html('Произошла ошибка: ' + data_json.error);
-                                  }
-                                }
-                            });
-                        </script>
-                    </div>
+                  <div class="task">
+                    <h2 class="task-title">{{ task.title }}</h2>
+                    {% if task.admin_html %}
+                      {{ task.admin_html|safe }}
+                    {% else %}
+                      <span>По данному таску нет администрационных функций</span>
+                    {% endif %}
+                  </div>
                 </td>
-                <td>
-                    <div class="task">
-                        <h2 class="task-title">Эксплуатация Bash-уязвимости</h2>
-                        <span id="b_total_files">Всего значений в хранилище:</span>
-                        <button id="b_clear">Очистить хранилище</button>
-
-                        <script>
-                            $( document ).ready(function() {
-                                $.get(
-                                  "/b_get_count/",
-                                  {},
-                                  onAjaxSuccess
-                                );
-                    
-                                function onAjaxSuccess(data)
-                                {
-                                  data_json = JSON.parse(data);
-                                  if (data_json.status == 'ok') {
-                                    $("#b_total_files").html('Всего значений в хранилище: ' + data_json.response.count);
-                                  }
-                                  else {
-                                    $("#b_total_files").html('Произошла ошибка: ' + data_json.error);
-                                  }
-                                }
-                            });
-                    
-                            $( "#b_clear" ).click(function() {
-                              $.post(
-                                  "/b_clear/",
-                                  {},
-                                  onAjaxSuccess
-                                );
-                    
-                                function onAjaxSuccess(data)
-                                {
-                                  data_json = JSON.parse(data);
-                                  if (data_json.status == 'ok') {
-                                    $("#b_total_files").html('Всего значений в хранилище: ' + data_json.response.count);
-                                  }
-                                  else {
-                                    $("#b_total_files").html('Произошла ошибка: ' + data_json.error);
-                                  }
-                                }
-                            });
-                        </script>
-                    </div>
-                </td>
+              {% endfor %}
             </tr>
-            <tr>
-                <td>
-                    <div class="task">
-                        <h2 class="task-title">Управление умным домом. <br>Лампочка</h2>
-                        <span id="m1_current">Текущее состояние: On</span>
-                        <button id="m1_reload">Обновить</button>
-                        <button id="m1_off">Выключить</button>
-                        <button id="m1_on">Включить</button>
-                    </div>
-                </td>
-                <td>
-                    <div class="task">
-                        <h2 class="task-title">Управление умным домом. <br>Пороговое значение датчика</h2>
-                        <span id="m2_current">Текущее состояние: None</span>
-                        <button id="m2_reload">Обновить</button>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="task">
-                        <h2 class="task-title">NONAME</h2>
-                    </div>
-                </td>
-                <td>
-                    <div class="task">
-                        <h2 class="task-title">NONAME</h2>
-                    </div>
-                </td>
-            </tr>
+          {% endfor %}
         </table>
     </div>
 </body>

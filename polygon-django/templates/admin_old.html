@@ -12,10 +12,10 @@
     </header>
     <div class="menu">
         <ul>
-            <li><a>Главная</a></li>
-            <li><a>Результаты</a></li>
-            <li><a>Администрирование</a></li>
-            <li><a href="/logout">Выйти</a></li>
+            <li><a href="/">🏠Главная</a></li>
+            <li><a href="/results">📈Результаты</a></li>
+            <li><a href="/admin">🔧Администрирование</a></li>
+            <li><a href="/logout">🚪Выйти</a></li>
         </ul>
     </div>
     <div class="content">
@@ -24,13 +24,13 @@
                 <td>
                     <div class="task">
                         <h2 class="task-title">Подключение к роутеру <br>по WiFi без пароля</h2>
-                        <span id="w_old_pass">Текущий пароль: michael</span>
+                        <span id="w_old_pass">Текущий пароль:</span>
                         <button id="button_new_pass">Сменить пароль</button>
                         <span id="w_new_pass"></span>
                         <script>
                             $( document ).ready(function() {
                                 $.get(
-                                  "/w_get_pass",
+                                  "/w_get_pass/",
                                   {},
                                   onAjaxSuccess
                                 );
@@ -38,9 +38,9 @@
                                 function onAjaxSuccess(data)
                                 {
                                   data_json = JSON.parse(data);
-                                  console.log(data_json);
                                   if (data_json.status == 'ok') {
                                     $("#w_old_pass").html('Текущий пароль: ' + data_json.response.password);
+                                    console.log(data_json.response.password);
                                   }
                                   else {
                                     $("#w_old_pass").html('Произошла ошибка: ' + data_json.error);
@@ -51,7 +51,7 @@
                             $( "#button_new_pass" ).click(function() {
                               $("#w_new_pass").html('Подождите...');
                               $.post(
-                                  "/w_change_pass",
+                                  "/w_change_pass/",
                                   {},
                                   onAjaxSuccess
                                 );
@@ -74,8 +74,48 @@
                 <td>
                     <div class="task">
                         <h2 class="task-title">Эксплуатация Bash-уязвимости</h2>
-                        <span id="b_total_files">Всего значений в хранилище: 9</span>
+                        <span id="b_total_files">Всего значений в хранилище:</span>
                         <button id="b_clear">Очистить хранилище</button>
+
+                        <script>
+                            $( document ).ready(function() {
+                                $.get(
+                                  "/b_get_count/",
+                                  {},
+                                  onAjaxSuccess
+                                );
+                    
+                                function onAjaxSuccess(data)
+                                {
+                                  data_json = JSON.parse(data);
+                                  if (data_json.status == 'ok') {
+                                    $("#b_total_files").html('Всего значений в хранилище: ' + data_json.response.count);
+                                  }
+                                  else {
+                                    $("#b_total_files").html('Произошла ошибка: ' + data_json.error);
+                                  }
+                                }
+                            });
+                    
+                            $( "#b_clear" ).click(function() {
+                              $.post(
+                                  "/b_clear/",
+                                  {},
+                                  onAjaxSuccess
+                                );
+                    
+                                function onAjaxSuccess(data)
+                                {
+                                  data_json = JSON.parse(data);
+                                  if (data_json.status == 'ok') {
+                                    $("#b_total_files").html('Всего значений в хранилище: ' + data_json.response.count);
+                                  }
+                                  else {
+                                    $("#b_total_files").html('Произошла ошибка: ' + data_json.error);
+                                  }
+                                }
+                            });
+                        </script>
                     </div>
                 </td>
             </tr>

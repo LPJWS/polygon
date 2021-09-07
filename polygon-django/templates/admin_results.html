@@ -80,8 +80,9 @@
                         <td>
                             {% if task.date_accepted %}
                                 ✅{{ task.date_accepted }}
-                            {% else %}
-                                ❌Отчет не принят <button id="accept_{{ task.id }}">✅Принять?</button>
+                            {% elif task.report %}
+                                <a href="{{ task.report.url }}">Отчет</a>
+                                ❌Отчет еще не принят <button id="accept_{{ task.id }}">✅Принять?</button>
                                 <script>
                                     $( "#accept_{{ task.id }}" ).click(function() {
                                         $.post(
@@ -97,6 +98,8 @@
                                         }
                                     });
                                 </script>
+                            {% else %}
+                                ❌Отчет еще не отправлен
                             {% endif %}
                         </td>
                     </tr>

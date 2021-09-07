@@ -22,6 +22,7 @@ urlpatterns = [
     path('results/student/<int:student_id>/', results_student),
     path('results/group/<int:group_id>/', results_group),
     path('results/task/<int:task_id>/', results_task),
+    path('report/<int:task_id>/', report),
     # url(r'^auth/registration/$', TokenViewSet.as_view()),
 ]
 

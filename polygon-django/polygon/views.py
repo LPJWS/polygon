@@ -1,30 +1,21 @@
 import re
-from django.contrib.auth import password_validation
 from django.http.response import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
-from rest_framework.decorators import api_view, permission_classes, action
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.contrib.auth.password_validation import validate_password
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
-
 
 from polygon.models import User
 from polygon.serializers import *
 
 from polygon import utils
-from django.template import loader
 
 import json
 from datetime import datetime
 
 
-@action(methods=['POST'], detail=False, url_path='signup', url_name='Sign Up User', permission_classes=(AllowAny,))
 def signup(request):
     if request.method == 'GET':
         context = {}
@@ -47,7 +38,6 @@ def signup(request):
             return render(request, 'signup.html', context)
 
 
-@action(methods=['GET', 'POST'], detail=False, url_path='signin', url_name='Sign In User', permission_classes=(AllowAny,))
 def signin(request):
     if request.method == 'GET':
         context = {}
@@ -62,13 +52,11 @@ def signin(request):
         return redirect('/')
 
 
-@action(methods=['GET'], detail=False, url_path='logout', url_name='Logout', permission_classes=(IsAuthenticated,))
 def logout_(request):
     logout(request)
     return redirect("/signin")
 
 
-@action(methods=['GET'], detail=False, url_path='', url_name='Admin page', permission_classes=(IsAuthenticated,))
 def admin_page(request):
     user = request.user
     if not user.is_authenticated:
@@ -79,24 +67,46 @@ def admin_page(request):
         res = []
         ptr = -1
         t = True
+        tasks_solved = TaskSolve.objects.filter(student=user)
+        tasks_solved_dict = {task.task.id:task for task in tasks_solved}
         for task in tasks:
-            print(task.material)
             if t:
                 res.append([])
                 ptr += 1
                 t = False
-                res[ptr].append(task)
+                solved = task.id in tasks_solved_dict.keys()
+                ts = None
+                if solved:
+                    ts = tasks_solved_dict[task.id]
+                res[ptr].append({'task': task, 'solved': solved, 'ts_obj': ts})
             else:
                 t = True
-                res[ptr].append(task)
+                solved = task.id in tasks_solved_dict.keys()
+                ts = None
+                if solved:
+                    ts = tasks_solved_dict[task.id]
+                res[ptr].append({'task': task, 'solved': solved, 'ts_obj': ts})
         context = {'user': user, 'tasks': res}
     else:
         template = 'admin.html'
-        context = {'user': user}
+
+        tasks = Task.objects.all().order_by('order')
+        res = []
+        ptr = -1
+        t = True
+        for task in tasks:
+            if t:
+                res.append([])
+                ptr += 1
+                t = False
+            else:
+                t = True
+            res[ptr].append(task)
+
+        context = {'user': user, 'tasks': res}
     return render(request, template, context)
 
 
-@action(methods=['GET'], detail=False, url_path='w_get_pass', url_name='Lab 1 get pass', permission_classes=(IsAuthenticated,))
 def w_get_pass(request):
     user = request.user
     if not user.is_superuser:
@@ -106,7 +116,6 @@ def w_get_pass(request):
 
 
 @csrf_exempt
-@action(methods=['POST'], detail=False, url_path='w_change_pass', url_name='Lab 1 change pass', permission_classes=(IsAuthenticated,))
 def w_change_pass(request):
     user = request.user
     if not user.is_superuser:
@@ -141,28 +150,12 @@ def b_clear(request):
 
 
 @csrf_exempt
-@action(methods=['POST'], detail=False, url_path='send_flag', url_name='Send flag', permission_classes=(IsAuthenticated,))
 def send_flag(request, task_id):
     user = request.user
     if not user.is_authenticated:
         return HttpResponse(json.dumps({"status": "error", "error": "Вы не авторизованы"}))
     data = request.POST
     task = Task.objects.get(id=task_id)
-
-    # if task.title == "Подключение к роутеру по WiFi без пароля":
-    #     data_ = json.loads(utils.get_pass())
-    #     if data_['status'] == 'ok':
-    #         flag = data_['response']['password']
-    #         if data['flag'] == flag:
-    #             utils.change_pass()
-    #             ts, created = TaskSolve.objects.get_or_create(task=task, student=user)
-    #             if created:
-    #                 ts.save()
-    #                 return HttpResponse(json.dumps({"status": "ok", "response": "correct"}))
-    #         else:
-    #             return HttpResponse(json.dumps({"status": "ok", "response": "wrong"}))
-    #     else:
-    #         return HttpResponse(json.dumps(data_))
 
     if task.flag == data['flag']:
         if task.title == "Эксплуатация Bash-уязвимости":
@@ -259,3 +252,22 @@ def accept_manual(request):
     if created:
         task_solved.save()
     return HttpResponse(json.dumps({"status": "ok", "response": ""}))
+
+
+@csrf_exempt
+def report(request, task_id):
+    user = request.user
+    if not user.is_authenticated:
+        return HttpResponse(json.dumps({"status": "error", "error": "Вы не авторизованы"}))
+    file = request.FILES['file'] if 'file' in request.FILES else None
+    task = TaskSolve.objects.get(id=task_id)
+
+    if task.student != user:
+        return HttpResponse(json.dumps({"status": "error", "error": "Вы не можете прикрепить отчет к данному таску"}))
+
+    if file:
+        task.report = file
+        task.save()
+        return HttpResponse(json.dumps({"status": "ok", "response": ""}))
+    else:
+        return HttpResponse(json.dumps({"status": "error", "error": "Файл не прикреплен"}))

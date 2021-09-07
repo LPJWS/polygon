@@ -92,7 +92,8 @@ class Task(models.Model):
     flag = models.CharField(max_length=100, null=True, blank=True, verbose_name="Флаг (ответ)")
     order = models.IntegerField(default=0, verbose_name="Номер по порядку")
     is_manual = models.BooleanField(default=False, verbose_name="Таск оценивается вручную?")
-    material = models.ManyToManyField(Attachment, blank=True, null=True)
+    material = models.ManyToManyField(Attachment, blank=True)
+    admin_html = models.TextField(null=True, blank=True, verbose_name="Верстка для администратора")
 
     def __str__(self) -> str:
         return f"{self.title}"
@@ -112,6 +113,7 @@ class TaskSolve(models.Model):
     student = models.ForeignKey(User, on_delete=CASCADE, verbose_name="Студент")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время решения")
     date_accepted = models.DateTimeField(blank=True, null=True, verbose_name="Дата принятия отчета")
+    report = models.FileField(upload_to='reports', blank=True, null=True)
 
     def __str__(self) -> str:
         return f"{self.task.title} ({self.student.name} {self.student.group})"

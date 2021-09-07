@@ -79,3 +79,13 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'name', 'photo']
+
+
+class TaskSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для тасков
+    """
+
+    class Meta:
+        model = Task
+        fields = "__all__"

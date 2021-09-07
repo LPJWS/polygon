@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'polygon',
-    'fcm_django'
+    'fcm_django',
 ]
 
 FCM_DJANGO_SETTINGS = {

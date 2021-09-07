@@ -24,50 +24,99 @@
             <tr>
                 {% for task in row %}
                 <td>
-                    <div class="task" id={{ task.id }}>
-                        <h2 class="task-title">{{ task.title }}</h2>
-                        <p class="task-desc">{{ task.desc }}</p>
-                        {% if task.material.all %}
+                    <div class="task" id={{ task.task.id }}>
+                        <h2 class="task-title">{{ task.task.title }}</h2>
+                        <p class="task-desc">{{ task.task.desc }}</p>
+                        {% if task.task.material.all %}
                             📎Раздаточные материалы:<br>
-                            {% for material in task.material.all %}
+                            {% for material in task.task.material.all %}
                                 <a href="media/{{ material.file }}">{{ material.title }}</a>
                             {% endfor %}
                             <br>
                         {% endif %}
-                        {% if task.is_manual %}
+                        {% if task.task.is_manual %}
                             <span>✋Данный таск проверяется вручную</span>
                         {% else %}
-                            <input id="flag_input_{{ task.id }}" type="text" placeholder="🏳️Флаг" name="flag">
-                            <hr>
-                            <button id="send_flag_{{ task.id }}">✅Отправить</button>
-                            <span id="status_{{ task.id }}"></span>
-                            <script>
-                                $( "#send_flag_{{ task.id }}" ).click(function() {
-                                      $.post(
-                                          "/send_flag/{{ task.id }}/",
-                                          {"flag": $("#flag_input_{{ task.id }}").val()},
-                                          onAjaxSuccess
-                                        );
-                            
-                                        function onAjaxSuccess(data)
-                                        {
-                                          data_json = JSON.parse(data);
-                                          if (data_json.status == 'ok') {
-                                              if (data_json.response == 'correct') {
-                                                $("#status_{{ task.id }}").html('Верный флаг!');
-                                              }
-                                              else {
-                                                $("#status_{{ task.id }}").html('Неверный флаг!');
-                                              }
-                                            $("#w_new_pass").html('Новый пароль: ' + data_json.response.password);
-                                            $("#w_old_pass").html('Текущий пароль: ' + data_json.response.password);
-                                          }
-                                          else {
-                                            $("#status_{{ task.id }}").html('Произошла ошибка: ' + data_json.error);
-                                          }
-                                        }
-                                    });
-                            </script>
+                            {% if task.solved %}
+                                <span>👍Вы выполнили данный таск!</span>
+                                <hr>
+                                <div class="report" id={{ task.ts_obj.id }}>
+                                    {% if not task.ts_obj.report %}
+                                        <span id="report_status_{{ task.ts_obj.id }}">Вы можете отправить отчет</span>
+                                        <input type="file" name="file" id="file_{{ task.ts_obj.id }}"/>
+                                        <br>
+                                        <button id="report_{{ task.ts_obj.id }}">✅Отправить</button>
+                                    {% else %}
+                                        <span id="report_status_{{ task.ts_obj.id }}">Вы уже отправили отчет. Вы можете посмотреть статус в разделе Результаты</span>
+                                    {% endif %}
+                                    <script>
+                                        $( "#report_{{ task.ts_obj.id }}" ).click(function() {
+                                            var fd = new FormData();
+                                            var files = $('#file_{{ task.ts_obj.id }}')[0].files;
+                                            if (files.length > 0 ) {
+                                                fd.append('file',files[0]);
+                                            }
+                                            $.ajax({
+                                                url: "/report/{{ task.ts_obj.id }}/",
+                                                type: "post",
+                                                data: fd,
+                                                contentType: false,
+                                                processData: false,
+                                                success: onAjaxSuccess
+                                                });
+                                    
+                                                function onAjaxSuccess(data)
+                                                {
+                                                    data_json = JSON.parse(data);
+                                                    if (data_json.status == 'ok') {
+                                                        $("#report_status_{{ task.ts_obj.id }}").html('👍Отчет успешно загружен');
+                                                    }
+                                                    else {
+                                                        $("#report_status_{{ task.ts_obj.id }}").html('Произошла ошибка: ' + data_json.error);
+                                                    }
+                                                }
+                                            });
+                                    </script>
+                                </div>
+                            {% else %}
+                                <input id="flag_input_{{ task.task.id }}" type="text" placeholder="🏳️Флаг" name="flag">
+                                <hr>
+                                <button id="send_flag_{{ task.task.id }}">✅Отправить</button>
+                                <span id="status_{{ task.task.id }}"></span>
+                                <script>
+                                    $( "#send_flag_{{ task.task.id }}" ).click(function() {
+                                        $.post(
+                                            "/send_flag/{{ task.task.id }}/",
+                                            {"flag": $("#flag_input_{{ task.task.id }}").val()},
+                                            onAjaxSuccess
+                                            );
+                                
+                                            function onAjaxSuccess(data)
+                                            {
+                                            data_json = JSON.parse(data);
+                                            if (data_json.status == 'ok') {
+                                                if (data_json.response == 'correct') {
+                                                    $("#status_{{ task.task.id }}").html('👍Верный флаг!');
+                                                    setTimeout(
+                                                        function() 
+                                                        {
+                                                            location.reload();
+                                                        }, 2000
+                                                    );
+                                                }
+                                                else {
+                                                    $("#status_{{ task.task.id }}").html('👎Неверный флаг!');
+                                                }
+                                                $("#w_new_pass").html('Новый пароль: ' + data_json.response.password);
+                                                $("#w_old_pass").html('Текущий пароль: ' + data_json.response.password);
+                                            }
+                                            else {
+                                                $("#status_{{ task.task.id }}").html('Произошла ошибка: ' + data_json.error);
+                                            }
+                                            }
+                                        });
+                                </script>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </td>

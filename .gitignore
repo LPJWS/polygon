@@ -56,4 +56,4 @@ Thumbs.db
 polygon-django/.env
 
 # buggy storage
-polygon-django/buggy/storage
+polygon-django/buggy/storage/*
