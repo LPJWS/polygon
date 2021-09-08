@@ -17,14 +17,12 @@
             <li><a href="/logout">🚪Выйти</a></li>
         </ul>
     </div>
-    <p>Вы вошли как {{ user.name }}</p>
-    <div class="content">
-        <table class="tasks">
-            {% for row in tasks %}
-            <tr>
-                {% for task in row %}
-                <td>
-                    <div class="task" id={{ task.task.id }}>
+    <div class="login-as"><p>Вы вошли как {{ user.name }}</p></div>
+    <div class="content" align="center">
+        <div class="new-tasks">
+            {% for task in tasks %}
+                <div class="new-task" id={{ task.task.id }}>
+                    <div class="task-content">
                         <h2 class="task-title">{{ task.task.title }}</h2>
                         <p class="task-desc">{{ task.task.desc }}</p>
                         {% if task.task.material.all %}
@@ -43,7 +41,10 @@
                                 <div class="report" id={{ task.ts_obj.id }}>
                                     {% if not task.ts_obj.report %}
                                         <span id="report_status_{{ task.ts_obj.id }}">Вы можете отправить отчет</span>
-                                        <input type="file" name="file" id="file_{{ task.ts_obj.id }}"/>
+                                        <input class="upload-file__input" type="file" name="file" id="file_{{ task.ts_obj.id }}"/>
+                                        <label class="upload-file__label" for="file_{{ task.ts_obj.id }}">
+                                            <span class="upload-file__text">Прикрепить отчет</span>
+                                        </label>
                                         <br>
                                         <button id="report_{{ task.ts_obj.id }}">✅Отправить</button>
                                     {% else %}
@@ -119,11 +120,9 @@
                             {% endif %}
                         {% endif %}
                     </div>
-                </td>
-                {% endfor %}
-            </tr>
+                </div>
             {% endfor %}
-        </table>
+        </div>
     </div>
 </body>
 </html>

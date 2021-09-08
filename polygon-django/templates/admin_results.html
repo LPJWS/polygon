@@ -82,7 +82,7 @@
                                 ✅{{ task.date_accepted }}
                             {% elif task.report %}
                                 <a href="{{ task.report.url }}">Отчет</a>
-                                ❌Отчет еще не принят <button id="accept_{{ task.id }}">✅Принять?</button>
+                                ⌛️Отчет еще не принят <button id="accept_{{ task.id }}">✅Принять?</button>
                                 <script>
                                     $( "#accept_{{ task.id }}" ).click(function() {
                                         $.post(
@@ -108,6 +108,18 @@
                 {% endfor %}
             </table>
         </div>
+    </div>
+    <div class="pages">
+        {% for page in pages_range %}
+            {% if page == cur_page %}
+                {{ page }} 
+            {% else %}
+                <a href="?page={{ page }}">{{ page }}</a> 
+            {% endif %}
+            {% if page != pages_range|length %}
+                - 
+            {% endif %}
+        {% endfor %}
     </div>
 </body>
 </html>

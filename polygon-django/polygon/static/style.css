@@ -11,9 +11,12 @@ body {
     font-family: Geneva, Arial, Helvetica, sans-serif;
 }
 
-button {
-    background: #61be61;
-    border-radius: 5px;
+a {
+    color: #31681b;
+}
+
+a:hover {
+    color: #152c0c;
 }
 
 header h1 {
@@ -131,5 +134,122 @@ span {
 }
 
 .report {
+    text-align: center;
+}
+
+.new-task {
+    background: #D8E3AB;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid green;
+    box-sizing: border-box;
+    width: calc(40% - 20px);
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-justify-content: flex-start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-order: 0;
+    -ms-flex-order: 0;
+    order: 0;
+    -webkit-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    -webkit-align-self: auto;
+    -ms-flex-item-align: auto;
+    align-self: auto;
+}
+
+.new-tasks {
+    margin: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-align-content: flex-start;
+    -ms-flex-line-pack: start;
+    align-content: flex-start;
+    -webkit-align-items: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+}
+
+.task-content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.upload-file__input {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+    overflow: hidden;
+    width: 0.4px;
+    height: 0.4px;
+}
+
+.upload-file__label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 240px;
+    border: 2px dashed #150B22;
+    padding: 9px 49px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.upload-file__label .upload-file__text,
+.upload-file__label .upload-file__icon path {
+    transition: .25s ease;
+}
+
+.upload-file__label:hover .upload-file__text {
+    color: #58862D;
+}
+
+.upload-file__label:hover .upload-file__icon path {
+    fill: #58862D;
+}
+
+.upload-file__label:hover {
+    border: 2px dashed #58862D;
+}
+
+button {
+    border: 0px;
+    background: #61be61;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+button:hover {
+    background: #4c944c;
+}
+
+.login-as {
+    text-align: center;
+}
+
+.pages {
     text-align: center;
 }

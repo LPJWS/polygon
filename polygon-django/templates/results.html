@@ -17,7 +17,7 @@
             <li><a href="/logout">🚪Выйти</a></li>
         </ul>
     </div>
-    <p>Вы вошли как {{ user.name }}</p>
+    <div class="login-as"><p>Вы вошли как {{ user.name }}</p></div>
     <div class="content" align="center">
         <div class="results">
             <h3>📈Ваши результаты</h3>
@@ -34,8 +34,10 @@
                         <td>
                             {% if task.date_accepted %}
                                 ✅{{ task.date_accepted }}
+                            {% elif task.report %}
+                                ⌛️Ожидает проверки
                             {% else %}
-                                ❌Отчет не принят
+                                ❌Отчет не отправлен
                             {% endif %}
                         </td>
                     </tr>

@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
+from django.core.paginator import Paginator
 
 from polygon.models import User
 from polygon.serializers import *
@@ -65,45 +66,19 @@ def admin_page(request):
         template = 'home.html'
         tasks = Task.objects.all().order_by('order')
         res = []
-        ptr = -1
-        t = True
         tasks_solved = TaskSolve.objects.filter(student=user)
         tasks_solved_dict = {task.task.id:task for task in tasks_solved}
         for task in tasks:
-            if t:
-                res.append([])
-                ptr += 1
-                t = False
-                solved = task.id in tasks_solved_dict.keys()
-                ts = None
-                if solved:
-                    ts = tasks_solved_dict[task.id]
-                res[ptr].append({'task': task, 'solved': solved, 'ts_obj': ts})
-            else:
-                t = True
-                solved = task.id in tasks_solved_dict.keys()
-                ts = None
-                if solved:
-                    ts = tasks_solved_dict[task.id]
-                res[ptr].append({'task': task, 'solved': solved, 'ts_obj': ts})
+            solved = task.id in tasks_solved_dict.keys()
+            ts = None
+            if solved:
+                ts = tasks_solved_dict[task.id]
+            res.append({'task': task, 'solved': solved, 'ts_obj': ts})
         context = {'user': user, 'tasks': res}
     else:
         template = 'admin.html'
-
         tasks = Task.objects.all().order_by('order')
-        res = []
-        ptr = -1
-        t = True
-        for task in tasks:
-            if t:
-                res.append([])
-                ptr += 1
-                t = False
-            else:
-                t = True
-            res[ptr].append(task)
-
-        context = {'user': user, 'tasks': res}
+        context = {'user': user, 'tasks': tasks}
     return render(request, template, context)
 
 
@@ -174,6 +149,7 @@ def send_flag(request, task_id):
 
 def results(request):
     user = request.user
+    params = request.GET
     if not user.is_authenticated:
         return redirect('/signin')
     if not user.is_superuser:
@@ -183,9 +159,17 @@ def results(request):
     else:
         template = 'admin_results.html'
         tasks_solved = TaskSolve.objects.all().order_by('student__group', 'student__name')
+        p = Paginator(tasks_solved, 2)
+        pages_range = p.page_range
+        if 'page' not in params:
+            page_num = 1
+        else:
+            page_num = int(params['page'])
+        page = p.page(page_num)
+        
         students = User.objects.all().exclude(id=user.id)
         tasks = Task.objects.all()
-        context = {'user': user, 'tasks': tasks_solved, 'students': students, 'tasks_raw': tasks}
+        context = {'user': user, 'tasks': page.object_list, 'students': students, 'tasks_raw': tasks, 'cur_page': page_num, 'pages_range': pages_range}
     return render(request, template, context)
 
 
